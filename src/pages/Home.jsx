@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import axios from "axios";
 import { LazyLoadComponent } from "react-lazy-load-image-component";
 import useDebounce from "../hooks/useDebounce";
 
 import Form from "../components/Form";
-import Card from "../components/Card";
+// import Card from "../components/Card";
 import ErrorPage from "./ErrorPage";
+
+const LazyCard = React.lazy(() => import("../components/Card"));
 
 const Home = () => {
   const [images, setImages] = useState([]);
@@ -42,9 +44,7 @@ const Home = () => {
       .includes(debouncedSearchQuery.toLowerCase())
   );
 
-  //maybe add a 404 page
   if (errorMessage) {
-    // return <div className="results-error">{errorMessage}</div>;
     return <ErrorPage />;
   }
 
@@ -70,7 +70,11 @@ const Home = () => {
         {/* start loading when 30% visible in viewport */}
         <LazyLoadComponent threshold={0.3}>
           {filteredImages.length > 0 ? (
-            filteredImages.map((img) => <Card img={img} key={img.id} />)
+            filteredImages.map((img) => (
+              <Suspense fallback={<div>Loading...</div>} key={img.id}>
+                <LazyCard img={img} />
+              </Suspense>
+            ))
           ) : (
             <p className="results-error">No results found. Please try again.</p>
           )}
