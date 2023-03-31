@@ -4,7 +4,6 @@ import { LazyLoadComponent } from "react-lazy-load-image-component";
 import useDebounce from "../hooks/useDebounce";
 
 import Form from "../components/Form";
-// import Card from "../components/Card";
 import ErrorPage from "./ErrorPage";
 
 const LazyCard = React.lazy(() => import("../components/Card"));
